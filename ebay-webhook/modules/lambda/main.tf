@@ -7,6 +7,7 @@ resource "aws_lambda_function" "this" {
   source_code_hash = filebase64sha256(var.filename)
   role             = var.role_arn
   architectures    = ["arm64"]
+  timeout          = 15
 
   environment {
     variables = {

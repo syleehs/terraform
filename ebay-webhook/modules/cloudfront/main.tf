@@ -1,5 +1,6 @@
 resource "aws_cloudfront_distribution" "this" {
-  enabled = true
+  enabled     = true
+  price_class = "PriceClass_100"
 
   origin {
     domain_name = trimsuffix(replace(var.lambda_url, "https://", ""), "/")
