@@ -1,3 +1,4 @@
 origin_secret      = ""   # openssl rand -hex 32
 ebay_client_id     = ""   # eBay production App ID
 ebay_client_secret = ""   # eBay production Cert ID
+ebay_redirect_uri  = ""
