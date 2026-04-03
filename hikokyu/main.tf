@@ -20,9 +20,11 @@ module "lambda" {
   role_arn           = module.iam.role_arn
   ebay_client_id     = var.ebay_client_id
   ebay_client_secret = var.ebay_client_secret
+  ebay_redirect_uri  = var.ebay_redirect_uri
   allowed_origin     = "*"
   dynamodb_table     = module.dynamodb.table_name
   psa_api_token      = var.psa_api_token
+  tcgplayer_api_key  = var.tcgplayer_api_key
 }
 
 module "lambda_url" {

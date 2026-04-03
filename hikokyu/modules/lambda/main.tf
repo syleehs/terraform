@@ -12,9 +12,11 @@ resource "aws_lambda_function" "this" {
     variables = {
       EBAY_CLIENT_ID     = var.ebay_client_id
       EBAY_CLIENT_SECRET = var.ebay_client_secret
+      EBAY_REDIRECT_URI  = var.ebay_redirect_uri
       ALLOWED_ORIGIN     = var.allowed_origin
       DYNAMODB_TABLE     = var.dynamodb_table
       PSA_API_TOKEN      = var.psa_api_token
+      TCGPLAYER_API_KEY  = var.tcgplayer_api_key
     }
   }
 }
@@ -35,4 +37,6 @@ variable "ebay_client_id"     {}
 variable "ebay_client_secret" { sensitive = true }
 variable "allowed_origin"     { default = "*" }
 variable "dynamodb_table"     {}
-variable "psa_api_token"     { sensitive = true }
+variable "psa_api_token"      { sensitive = true }
+variable "ebay_redirect_uri" {}
+variable "tcgplayer_api_key" { sensitive = true }
