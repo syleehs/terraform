@@ -42,3 +42,33 @@ module "frontend" {
   name   = "${var.name}-site"
 }
 
+module "lambda_crawler" {
+  source             = "./modules/lambda_crawler"
+  name               = "${var.name}-crawler"
+  filename           = var.crawler_zip
+  role_arn           = module.iam.role_arn
+  ebay_client_id     = var.ebay_client_id
+  ebay_client_secret = var.ebay_client_secret
+  dynamodb_table     = module.dynamodb.table_name
+  psa_api_token      = var.psa_api_token
+}
+
+resource "aws_cloudwatch_event_rule" "crawler_schedule" {
+  name                = "${var.name}-crawler-schedule"
+  description         = "Nightly PSA spec crawler at 11 PM ET"
+  schedule_expression = "cron(0 4 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "crawler_target" {
+  rule = aws_cloudwatch_event_rule.crawler_schedule.name
+  arn  = module.lambda_crawler.function_arn
+}
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowEventBridgeInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda_crawler.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.crawler_schedule.arn
+}
+

@@ -1,0 +1,40 @@
+resource "aws_lambda_function" "this" {
+  function_name    = var.name
+  runtime          = "provided.al2"
+  handler          = "bootstrap"
+  filename         = var.filename
+  source_code_hash = filebase64sha256(var.filename)
+  role             = var.role_arn
+  architectures    = ["arm64"]
+  timeout          = 300
+
+  environment {
+    variables = {
+      EBAY_CLIENT_ID     = var.ebay_client_id
+      EBAY_CLIENT_SECRET = var.ebay_client_secret
+      DYNAMODB_TABLE     = var.dynamodb_table
+      PSA_API_TOKEN      = var.psa_api_token
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "/aws/lambda/${var.name}"
+  retention_in_days = 7
+}
+
+output "function_name" {
+  value = aws_lambda_function.this.function_name
+}
+
+output "function_arn" {
+  value = aws_lambda_function.this.arn
+}
+
+variable "name" {}
+variable "filename" {}
+variable "role_arn" {}
+variable "ebay_client_id" {}
+variable "ebay_client_secret" { sensitive = true }
+variable "dynamodb_table" {}
+variable "psa_api_token" { sensitive = true }
