@@ -24,6 +24,7 @@ module "lambda" {
   allowed_origin     = "*"
   dynamodb_table     = module.dynamodb.table_name
   psa_api_token      = var.psa_api_token
+  admin_secret       = var.admin_secret
 }
 
 module "lambda_url" {
@@ -43,14 +44,12 @@ module "frontend" {
 }
 
 module "lambda_crawler" {
-  source             = "./modules/lambda_crawler"
-  name               = "${var.name}-crawler"
-  filename           = var.crawler_zip
-  role_arn           = module.iam.role_arn
-  ebay_client_id     = var.ebay_client_id
-  ebay_client_secret = var.ebay_client_secret
-  dynamodb_table     = module.dynamodb.table_name
-  psa_api_token      = var.psa_api_token
+  source         = "./modules/lambda_crawler"
+  name           = "${var.name}-crawler"
+  filename       = var.crawler_zip
+  role_arn       = module.iam.role_arn
+  dynamodb_table = module.dynamodb.table_name
+  psa_api_token  = var.psa_api_token
 }
 
 resource "aws_cloudwatch_event_rule" "crawler_schedule" {

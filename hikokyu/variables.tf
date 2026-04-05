@@ -37,6 +37,11 @@ variable "ebay_redirect_uri" {
   description = "eBay OAuth2 redirect URI (RU name) for user authorization code grant"
 }
 
+variable "admin_secret" {
+  type      = string
+  sensitive = true
+}
+
 variable "crawler_zip" {
   type    = string
   default = "crawler.zip"

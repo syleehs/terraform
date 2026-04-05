@@ -16,6 +16,7 @@ resource "aws_lambda_function" "this" {
       ALLOWED_ORIGIN     = var.allowed_origin
       DYNAMODB_TABLE     = var.dynamodb_table
       PSA_API_TOKEN      = var.psa_api_token
+      ADMIN_SECRET       = var.admin_secret
     }
   }
 }
@@ -38,3 +39,4 @@ variable "allowed_origin"     { default = "*" }
 variable "dynamodb_table"     {}
 variable "psa_api_token"      { sensitive = true }
 variable "ebay_redirect_uri" {}
+variable "admin_secret"      { sensitive = true }
