@@ -17,6 +17,8 @@ resource "aws_lambda_function" "this" {
       DYNAMODB_TABLE     = var.dynamodb_table
       PSA_API_TOKEN      = var.psa_api_token
       ADMIN_SECRET       = var.admin_secret
+      IMAGE_BUCKET       = var.image_bucket
+      IMAGE_CDN_URL      = var.image_cdn_url
     }
   }
 }
@@ -40,3 +42,5 @@ variable "dynamodb_table"     {}
 variable "psa_api_token"      { sensitive = true }
 variable "ebay_redirect_uri" {}
 variable "admin_secret"      { sensitive = true }
+variable "image_bucket"      { default = "" }
+variable "image_cdn_url"     { default = "" }

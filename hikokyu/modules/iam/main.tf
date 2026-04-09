@@ -24,8 +24,22 @@ resource "aws_iam_role_policy" "dynamodb" {
     Version = "2012-10-17"
     Statement = [{
       Effect   = "Allow"
-      Action   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Query", "dynamodb:Scan", "dynamodb:UpdateItem"]
+      Action   = ["dynamodb:GetItem", "dynamodb:BatchGetItem", "dynamodb:PutItem", "dynamodb:Query", "dynamodb:Scan", "dynamodb:UpdateItem", "dynamodb:DeleteItem"]
       Resource = var.dynamodb_table_arn
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "s3_images" {
+  name = "${var.name}-s3-images"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["s3:PutObject"]
+      Resource = "arn:aws:s3:::gradeguess-site/cards/*"
     }]
   })
 }

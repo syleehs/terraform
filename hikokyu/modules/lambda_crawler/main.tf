@@ -10,10 +10,12 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      EBAY_CLIENT_ID     = var.ebay_client_id
-      EBAY_CLIENT_SECRET = var.ebay_client_secret
       DYNAMODB_TABLE     = var.dynamodb_table
       PSA_API_TOKEN      = var.psa_api_token
+      IMAGE_BUCKET       = var.image_bucket
+      IMAGE_CDN_URL      = var.image_cdn_url
+      EBAY_CLIENT_ID     = var.ebay_client_id
+      EBAY_CLIENT_SECRET = var.ebay_client_secret
     }
   }
 }
@@ -34,7 +36,12 @@ output "function_arn" {
 variable "name" {}
 variable "filename" {}
 variable "role_arn" {}
-variable "ebay_client_id" {}
-variable "ebay_client_secret" { sensitive = true }
 variable "dynamodb_table" {}
-variable "psa_api_token" { sensitive = true }
+variable "psa_api_token"      { sensitive = true }
+variable "image_bucket"       { default = "" }
+variable "image_cdn_url"      { default = "" }
+variable "ebay_client_id"     { default = "" }
+variable "ebay_client_secret" {
+  sensitive = true
+  default   = ""
+}

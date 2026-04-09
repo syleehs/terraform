@@ -21,10 +21,12 @@ module "lambda" {
   ebay_client_id     = var.ebay_client_id
   ebay_client_secret = var.ebay_client_secret
   ebay_redirect_uri  = var.ebay_redirect_uri
-  allowed_origin     = "*"
+  allowed_origin     = "https://d13tqu8zrmovi6.cloudfront.net,*"
   dynamodb_table     = module.dynamodb.table_name
   psa_api_token      = var.psa_api_token
   admin_secret       = var.admin_secret
+  image_bucket       = "gradeguess-site"
+  image_cdn_url      = "https://d13tqu8zrmovi6.cloudfront.net"
 }
 
 module "lambda_url" {
@@ -49,13 +51,17 @@ module "lambda_crawler" {
   filename       = var.crawler_zip
   role_arn       = module.iam.role_arn
   dynamodb_table = module.dynamodb.table_name
-  psa_api_token  = var.psa_api_token
+  psa_api_token      = var.psa_api_token
+  image_bucket       = "gradeguess-site"
+  image_cdn_url      = "https://d13tqu8zrmovi6.cloudfront.net"
+  ebay_client_id     = var.ebay_client_id
+  ebay_client_secret = var.ebay_client_secret
 }
 
 resource "aws_cloudwatch_event_rule" "crawler_schedule" {
   name                = "${var.name}-crawler-schedule"
-  description         = "Nightly PSA spec crawler at 11 PM ET"
-  schedule_expression = "cron(0 4 * * ? *)"
+  description         = "Nightly crawler at 04:05 UTC (after PSA quota reset ~04:00 UTC)"
+  schedule_expression = "cron(5 4 * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "crawler_target" {
