@@ -7,6 +7,7 @@ resource "aws_lambda_function" "this" {
   role             = var.role_arn
   architectures    = ["arm64"]
   timeout          = 300
+  memory_size      = var.memory_size
 
   environment {
     variables = {
@@ -14,8 +15,10 @@ resource "aws_lambda_function" "this" {
       PSA_API_TOKEN      = var.psa_api_token
       IMAGE_BUCKET       = var.image_bucket
       IMAGE_CDN_URL      = var.image_cdn_url
-      EBAY_CLIENT_ID     = var.ebay_client_id
-      EBAY_CLIENT_SECRET = var.ebay_client_secret
+      REDACT_PCT         = var.redact_pct
+      EBAY_CLIENT_ID            = var.ebay_client_id
+      EBAY_CLIENT_SECRET        = var.ebay_client_secret
+      API_CF_DISTRIBUTION_ID    = var.api_cf_distribution_id
     }
   }
 }
@@ -45,3 +48,6 @@ variable "ebay_client_secret" {
   sensitive = true
   default   = ""
 }
+variable "memory_size"      { default = 512 }
+variable "redact_pct"              { default = "20" }
+variable "api_cf_distribution_id"  { default = "" }

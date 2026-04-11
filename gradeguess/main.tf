@@ -22,6 +22,16 @@ resource "aws_cloudfront_origin_access_control" "site" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_cloudfront_public_key" "signing" {
+  name        = "gradeguess-signing-key"
+  encoded_key = var.cf_public_key_pem
+}
+
+resource "aws_cloudfront_key_group" "signing" {
+  name  = "gradeguess-signing"
+  items = [aws_cloudfront_public_key.signing.id]
+}
+
 resource "aws_cloudfront_distribution" "site" {
   enabled             = true
   default_root_object = "index.html"
@@ -50,7 +60,7 @@ resource "aws_cloudfront_distribution" "site" {
     max_ttl     = 86400
   }
 
-  # Card images under /cards/ — longer cache
+  # Card images under /cards/ — longer cache, signed URLs required
   ordered_cache_behavior {
     path_pattern           = "/cards/*"
     target_origin_id       = "s3-origin"
@@ -58,20 +68,21 @@ resource "aws_cloudfront_distribution" "site" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true
+    trusted_key_groups     = [aws_cloudfront_key_group.signing.id]
 
     forwarded_values {
-      query_string = false
+      query_string = true
       cookies { forward = "none" }
     }
 
     min_ttl     = 86400
     default_ttl = 86400
-    max_ttl     = 604800 # 7 days
+    max_ttl     = 604800
   }
 
   # SPA fallback — return index.html for client-side routes
   custom_error_response {
-    error_code         = 403
+    error_code         = 404
     response_code      = 200
     response_page_path = "/index.html"
   }
@@ -93,8 +104,11 @@ resource "aws_s3_bucket_policy" "site" {
     Statement = [{
       Effect    = "Allow"
       Principal = { Service = "cloudfront.amazonaws.com" }
-      Action    = "s3:GetObject"
-      Resource  = "${aws_s3_bucket.site.arn}/*"
+      Action    = ["s3:GetObject", "s3:ListBucket"]
+      Resource  = [
+        "${aws_s3_bucket.site.arn}/*",
+        aws_s3_bucket.site.arn
+      ]
       Condition = {
         StringEquals = {
           "AWS:SourceArn" = aws_cloudfront_distribution.site.arn
@@ -117,7 +131,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "site" {
     }
 
     expiration {
-      days = 90
+      days = 7
     }
   }
 }

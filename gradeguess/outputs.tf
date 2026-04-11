@@ -9,3 +9,7 @@ output "cloudfront_url" {
 output "cloudfront_distribution_id" {
   value = aws_cloudfront_distribution.site.id
 }
+
+output "cf_public_key_id" {
+  value = aws_cloudfront_public_key.signing.id
+}

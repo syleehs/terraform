@@ -18,7 +18,9 @@ resource "aws_lambda_function" "this" {
       PSA_API_TOKEN      = var.psa_api_token
       ADMIN_SECRET       = var.admin_secret
       IMAGE_BUCKET       = var.image_bucket
-      IMAGE_CDN_URL      = var.image_cdn_url
+      IMAGE_CDN_URL         = var.image_cdn_url
+      CF_KEY_PAIR_ID        = var.cf_key_pair_id
+      CF_PRIVATE_KEY_SECRET = var.cf_private_key_secret
     }
   }
 }
@@ -44,3 +46,5 @@ variable "ebay_redirect_uri" {}
 variable "admin_secret"      { sensitive = true }
 variable "image_bucket"      { default = "" }
 variable "image_cdn_url"     { default = "" }
+variable "cf_key_pair_id"        { default = "" }
+variable "cf_private_key_secret" { default = "" }

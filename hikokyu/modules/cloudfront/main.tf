@@ -34,9 +34,9 @@ resource "aws_cloudfront_distribution" "this" {
       }
     }
 
-    min_ttl     = 60
-    default_ttl = 300
-    max_ttl     = 3600
+    min_ttl     = 0
+    default_ttl = 0
+    max_ttl     = 86400
   }
 
   viewer_certificate {
@@ -52,6 +52,10 @@ resource "aws_cloudfront_distribution" "this" {
 
 output "domain_name" {
   value = aws_cloudfront_distribution.this.domain_name
+}
+
+output "distribution_id" {
+  value = aws_cloudfront_distribution.this.id
 }
 
 variable "lambda_url"    {}

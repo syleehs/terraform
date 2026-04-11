@@ -11,6 +11,7 @@ module "iam" {
   source             = "./modules/iam"
   name               = var.name
   dynamodb_table_arn = module.dynamodb.table_arn
+  cf_private_key_secret_arn = var.cf_private_key_secret
 }
 
 module "lambda" {
@@ -27,6 +28,8 @@ module "lambda" {
   admin_secret       = var.admin_secret
   image_bucket       = "gradeguess-site"
   image_cdn_url      = "https://d13tqu8zrmovi6.cloudfront.net"
+  cf_key_pair_id        = var.cf_key_pair_id
+  cf_private_key_secret = var.cf_private_key_secret
 }
 
 module "lambda_url" {
@@ -54,14 +57,16 @@ module "lambda_crawler" {
   psa_api_token      = var.psa_api_token
   image_bucket       = "gradeguess-site"
   image_cdn_url      = "https://d13tqu8zrmovi6.cloudfront.net"
-  ebay_client_id     = var.ebay_client_id
-  ebay_client_secret = var.ebay_client_secret
+  redact_pct         = "20"
+  ebay_client_id            = var.ebay_client_id
+  ebay_client_secret        = var.ebay_client_secret
+  api_cf_distribution_id    = module.cloudfront.distribution_id
 }
 
 resource "aws_cloudwatch_event_rule" "crawler_schedule" {
   name                = "${var.name}-crawler-schedule"
-  description         = "Nightly crawler at 04:05 UTC (after PSA quota reset ~04:00 UTC)"
-  schedule_expression = "cron(5 4 * * ? *)"
+  description         = "Nightly crawler at 04:01 UTC (after PSA quota reset ~04:00 UTC)"
+  schedule_expression = "cron(1 4 * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "crawler_target" {

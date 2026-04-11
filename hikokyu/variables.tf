@@ -46,3 +46,15 @@ variable "crawler_zip" {
   type    = string
   default = "crawler.zip"
 }
+
+variable "cf_key_pair_id" {
+  type        = string
+  default     = ""
+  description = "CloudFront public key ID for URL signing"
+}
+
+variable "cf_private_key_secret" {
+  type        = string
+  default     = ""
+  description = "Secrets Manager ARN for CloudFront private key PEM"
+}
