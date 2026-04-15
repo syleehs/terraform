@@ -61,6 +61,33 @@ resource "aws_cloudfront_distribution" "site" {
   }
 }
 
+# Tier training/ submissions through cheaper storage classes as they age.
+# Standard → Standard-IA at 90d → Glacier Instant at 365d. Never auto-deleted.
+# Scope is limited to the training/ prefix so the static site content (everything
+# else) stays in Standard.
+resource "aws_s3_bucket_lifecycle_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    id     = "training-tiering"
+    status = "Enabled"
+
+    filter {
+      prefix = "training/"
+    }
+
+    transition {
+      days          = 90
+      storage_class = "STANDARD_IA"
+    }
+
+    transition {
+      days          = 365
+      storage_class = "GLACIER_IR"
+    }
+  }
+}
+
 resource "aws_s3_bucket_policy" "site" {
   bucket = aws_s3_bucket.site.id
 
