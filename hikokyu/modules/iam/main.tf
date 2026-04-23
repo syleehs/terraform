@@ -44,6 +44,20 @@ resource "aws_iam_role_policy" "s3_images" {
   })
 }
 
+resource "aws_iam_role_policy" "s3_training" {
+  name = "${var.name}-s3-training"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["s3:PutObject"]
+      Resource = "arn:aws:s3:::pokemon-grader-api-site/training/*"
+    }]
+  })
+}
+
 resource "aws_iam_role_policy" "secrets_manager" {
   count = var.cf_private_key_secret_arn != "" ? 1 : 0
   name  = "${var.name}-secrets-manager"
@@ -73,6 +87,20 @@ resource "aws_iam_role_policy" "cloudfront_invalidation" {
   })
 }
 
+resource "aws_iam_role_policy" "firehose_put" {
+  name = "${var.name}-firehose-put"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["firehose:PutRecord", "firehose:PutRecordBatch"]
+      Resource = var.events_firehose_arn
+    }]
+  })
+}
+
 output "role_arn" {
   value = aws_iam_role.lambda_exec.arn
 }
@@ -80,3 +108,4 @@ output "role_arn" {
 variable "name" {}
 variable "dynamodb_table_arn" {}
 variable "cf_private_key_secret_arn" { default = "" }
+variable "events_firehose_arn"       { default = "" }
