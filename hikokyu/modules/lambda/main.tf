@@ -21,6 +21,9 @@ resource "aws_lambda_function" "this" {
       IMAGE_CDN_URL         = var.image_cdn_url
       CF_KEY_PAIR_ID        = var.cf_key_pair_id
       CF_PRIVATE_KEY_SECRET = var.cf_private_key_secret
+      TRAINING_BUCKET       = var.training_bucket
+      TRAINING_PREFIX       = var.training_prefix
+      FIREHOSE_STREAM_NAME  = var.firehose_stream_name
     }
   }
 }
@@ -48,3 +51,6 @@ variable "image_bucket"      { default = "" }
 variable "image_cdn_url"     { default = "" }
 variable "cf_key_pair_id"        { default = "" }
 variable "cf_private_key_secret" { default = "" }
+variable "training_bucket"       { default = "pokemon-grader-api-site" }
+variable "training_prefix"       { default = "training" }
+variable "firehose_stream_name"  { default = "" }
