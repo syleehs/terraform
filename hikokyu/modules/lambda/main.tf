@@ -30,7 +30,7 @@ resource "aws_lambda_function" "this" {
 
 resource "aws_cloudwatch_log_group" "this" {
   name              = "/aws/lambda/${var.name}"
-  retention_in_days = 7
+  retention_in_days = 14
 }
 
 output "function_name" {

@@ -58,3 +58,13 @@ variable "cf_private_key_secret" {
   default     = ""
   description = "Secrets Manager ARN for CloudFront private key PEM"
 }
+
+variable "alert_email" {
+  type        = string
+  description = "Email address for CloudWatch alarm notifications"
+}
+
+variable "enable_canary" {
+  type    = bool
+  default = true
+}
